@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="half_transparent_white">#80FFFFFF</color>
+
+    <color name="third_transparent_white">#59FFFFFF</color>
+    <color name="quarter_transparent_white">#40FFFFFF</color>
+
 </resources>
