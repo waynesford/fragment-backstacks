@@ -6,26 +6,31 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
-import android.widget.FrameLayout;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements OnClickListener{
 
-	private static final int LAYOUT_ID = 1000; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 		
-		FrameLayout layout = new FrameLayout(this); 
-		layout.setId(LAYOUT_ID);
-		setContentView(layout);
+		//setting click listeners for the tab
+		findViewById(R.id.tabA).setOnClickListener(this);
+		findViewById(R.id.tabB).setOnClickListener(this);
+		findViewById(R.id.tabC).setOnClickListener(this);
+
 	}
 	
 	@Override
 	protected void onStart() 
 	{
 		super.onStart();
+		
 		MyFragment fragment = new MyFragment();
 		fragment.setArguments("Stack A:", 1);
 		add(fragment);
@@ -38,13 +43,34 @@ public class MainActivity extends FragmentActivity {
 		return true;
 	}
 	
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		case R.id.tabA: case R.id.tabB: case  R.id.tabC:
+			String tab_letter = ((TextView)v).getText().toString();
+			MyFragment fragment = new MyFragment();
+			fragment.setArguments(tab_letter, 1);
+			replace(fragment);
+			break; 
+		}
+		
+	}
+	
 	private void add(Fragment fragment)
 	{
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.add(LAYOUT_ID, fragment);
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.add(R.id.mainWindow, fragment);
 		fragmentTransaction.commit();
 	}
+	
+	private void replace (Fragment fragment)
+	{
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.replace(R.id.mainWindow, fragment);
+		fragmentTransaction.commit(); 
+	}
+
+
 	
 	
 

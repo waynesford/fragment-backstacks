@@ -24,17 +24,19 @@
         android:orientation="horizontal" >
 
         <TextView
+            android:id="@+id/tabA"
             style="@style/textview_tab"
             android:text="A" />
 
         <TextView
+            android:id="@+id/tabB"
             style="@style/textview_tab"
             android:text="B" />
 
         <TextView
+            android:id="@+id/tabC"
             style="@style/textview_tab"
             android:text="C" />
-
     </LinearLayout>
 
 </RelativeLayout>
