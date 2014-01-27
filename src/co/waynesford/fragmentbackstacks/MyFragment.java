@@ -25,6 +25,13 @@ public class MyFragment extends Fragment
 		setArguments(bundle);
 	}
 	
+	public String getName()
+	{
+		String label 	= getArguments().getString(LABEL);
+		int counter 	= getArguments().getInt(COUNTER);
+		return label + counter; 
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
 	{
