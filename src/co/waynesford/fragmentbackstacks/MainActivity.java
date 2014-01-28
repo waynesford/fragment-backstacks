@@ -30,36 +30,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		onClick(mCurrentTab);
 	}
 
-	@Override
-	protected void onStart() 
-	{
-		super.onStart();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
 
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()) {
 		case R.id.tabA: case R.id.tabB: case R.id.tabC:
 
+			//deselect the previously selected tab
+			mCurrentTab.setSelected(false); 
+			
 			v.setSelected(true); //toggles on the selected color that we set in our selector drawable
 			//grab the letter of the tab and make a new fragment and replace it on the view
 			String tab_letter = ((TextView)v).getText().toString();
-			MyFragment fragment = new MyFragment();
-			fragment.setArguments(tab_letter, 1);
+			ParentFragment fragment = new ParentFragment();
+			fragment.setArguments(tab_letter);
 			replace(fragment);
 
-			//deselect the previously selected tab
-			mCurrentTab.setSelected(false); 
 			//set tab just clicked as the new current tab
 			mCurrentTab = v; 
-			
 			
 			int count = getSupportFragmentManager().getBackStackEntryCount();
 			Log.d(TAG, "backstack count: " + count);
@@ -76,8 +64,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		fragmentTransaction.add(R.id.mainWindow, fragment);
 		fragmentTransaction.commit();
 	}
+	
 
-	private void replace (MyFragment fragment)
+	private void replace (ParentFragment fragment)
 	{
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		
@@ -85,10 +74,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		Fragment fragmentInStack = getSupportFragmentManager().findFragmentByTag(fragment.getName());
 		if(fragmentInStack!=null) {
 			fragmentTransaction.replace(R.id.mainWindow, fragmentInStack, fragment.getName());
+			Log.d(TAG, "fragment got from stack");
 			//don't add to backstack because it's already on the backstack and we want to maintain the state of it
 		} else  {
 			fragmentTransaction.replace(R.id.mainWindow, fragment, fragment.getName());
 			fragmentTransaction.addToBackStack(null);
+			Log.d(TAG, "fragment added");
+
 		}
 		fragmentTransaction.commit(); 
 		getSupportFragmentManager().executePendingTransactions();

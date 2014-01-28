@@ -35,28 +35,34 @@ public class MyFragment extends Fragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
 	{
-		String label 	= getArguments().getString(LABEL);
-		int counter 	= getArguments().getInt(COUNTER);
-
-		
-		View v = inflater.inflate(R.layout.screen, container, false);
-		
-		TextView tv = (TextView)v.findViewById(R.id.textView1);
-		tv.setText(label + counter);
-		
+		//grabbing label and screen number passed in so we can display on view
+		final String label 	= getArguments().getString(LABEL);
+		final int counter 	= getArguments().getInt(COUNTER);
 		//increment counter for next screen
-		counter++;
-		Button button = (Button)v.findViewById(R.id.button1);
-		button.setText("Go to " + label + counter);
+		final int next = counter+1; 
+		
+		View layout = inflater.inflate(R.layout.screen, container, false);
+		
+		TextView tv = (TextView)layout.findViewById(R.id.textView1);
+		tv.setText(label + counter);
+		Button button = (Button)layout.findViewById(R.id.button1);
+		button.setText("Go to " + label + next);
 		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(getActivity(), "button hit", Toast.LENGTH_SHORT).show();
-			}
+				MyFragment fragment = new MyFragment();
+				fragment.setArguments(label, next);
+				goToFragment(fragment); 
+			}	
 		});
-
 		
-		
-		return v;
+		return layout;
 	}
+	
+	private void goToFragment(MyFragment fragment)
+	{
+		( (ParentFragment) getParentFragment() ).replace(fragment);
+	}
+	
+	
 }
