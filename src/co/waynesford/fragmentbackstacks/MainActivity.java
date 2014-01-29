@@ -14,7 +14,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 
 	private static final String TAG = MainActivity.class.getSimpleName(); 
 
-	private View mCurrentTab; 
+	/**
+	 * The current textview tab, so we know what to dehighlight when the next tab is pressed. 
+	 */
+	private View mCurrentTab;
+	/**
+	 * The current view hierarchy.
+	 */
 	private ParentFragment mCurrentParentFragment; 
 
 	
@@ -52,22 +58,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 
 			//set tab just clicked as the new current tab
 			mCurrentTab = v; 
-			
-			int count = getSupportFragmentManager().getBackStackEntryCount();
-			Log.d(TAG, "backstack count: " + count);
 			break; 
 		}
 	}
 
-
-
-	private void add(Fragment fragment)
-	{
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.add(R.id.mainWindow, fragment);
-		fragmentTransaction.commit();
-	}
-	
 
 	private void replace (ParentFragment fragment)
 	{
@@ -76,37 +70,32 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		//if the fragment is already in the backstack, then retrieve it and show it instead
 		Fragment fragmentInStack = getSupportFragmentManager().findFragmentByTag(fragment.getName());
 		if(fragmentInStack!=null) {
+			
 			fragmentTransaction.replace(R.id.mainWindow, fragmentInStack, fragment.getName());
 			mCurrentParentFragment = (ParentFragment)fragmentInStack;
-			Log.d(TAG, "fragment got from stack");
 			//don't add to backstack because it's already on the backstack and we want to maintain the state of it
 		} else  {
+			
 			fragmentTransaction.replace(R.id.mainWindow, fragment, fragment.getName());
 			fragmentTransaction.addToBackStack(null);
 			mCurrentParentFragment = fragment;
-			Log.d(TAG, "fragment added");
 
 		}
 		fragmentTransaction.commit(); 
 		getSupportFragmentManager().executePendingTransactions();
-		
-		
-
 	}
+	
 	
 	@Override
 	public void onBackPressed() 
 	{
-		//if we are at the first screen, then we can't back out any further on this tab
+		//if we are at the first screen, then we can't back out any further on this view stack/tab
 		if(mCurrentParentFragment.getChildFragmentManager().getBackStackEntryCount()==1) {
 			return; 
 		}
 		
+		//pop off the topmost fragment in the current view hiearchy
 		mCurrentParentFragment.getChildFragmentManager().popBackStackImmediate();
-		//mCurrentParentFragment.getChildFragmentManager().executePendingTransactions();
-
-		
-		//super.onBackPressed();
 	}
 
 
