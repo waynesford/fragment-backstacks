@@ -14,6 +14,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 
 	private static final String TAG = MainActivity.class.getSimpleName(); 
 
+	private View mCurrentTab; 
+	private ParentFragment mCurrentParentFragment; 
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -55,7 +59,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		}
 	}
 
-	View mCurrentTab; 
 
 
 	private void add(Fragment fragment)
@@ -74,17 +77,36 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		Fragment fragmentInStack = getSupportFragmentManager().findFragmentByTag(fragment.getName());
 		if(fragmentInStack!=null) {
 			fragmentTransaction.replace(R.id.mainWindow, fragmentInStack, fragment.getName());
+			mCurrentParentFragment = (ParentFragment)fragmentInStack;
 			Log.d(TAG, "fragment got from stack");
 			//don't add to backstack because it's already on the backstack and we want to maintain the state of it
 		} else  {
 			fragmentTransaction.replace(R.id.mainWindow, fragment, fragment.getName());
 			fragmentTransaction.addToBackStack(null);
+			mCurrentParentFragment = fragment;
 			Log.d(TAG, "fragment added");
 
 		}
 		fragmentTransaction.commit(); 
 		getSupportFragmentManager().executePendingTransactions();
+		
+		
 
+	}
+	
+	@Override
+	public void onBackPressed() 
+	{
+		//if we are at the first screen, then we can't back out any further on this tab
+		if(mCurrentParentFragment.getChildFragmentManager().getBackStackEntryCount()==1) {
+			return; 
+		}
+		
+		mCurrentParentFragment.getChildFragmentManager().popBackStackImmediate();
+		//mCurrentParentFragment.getChildFragmentManager().executePendingTransactions();
+
+		
+		//super.onBackPressed();
 	}
 
 

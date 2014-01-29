@@ -86,6 +86,8 @@ public class ParentFragment extends Fragment{
 		mCurrentFragment = fragment; 
 		
 		int count = getChildFragmentManager().getBackStackEntryCount();
+		
+		Log.d(TAG, "fragment just added:" + fragment.getName());
 		Log.d(TAG, "parentfragment's child backstack count: " + count);
 	}
 	
