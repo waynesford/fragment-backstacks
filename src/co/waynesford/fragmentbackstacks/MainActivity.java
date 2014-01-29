@@ -49,11 +49,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 			//deselect the previously selected tab
 			mCurrentTab.setSelected(false); 
 			
-			v.setSelected(true); //toggles on the selected color that we set in our selector drawable
-			//grab the letter of the tab and make a new fragment and replace it on the view
-			String tabLetter = ((TextView)v).getText().toString();
-			replace(tabLetter);
+			//grab the name of the tab and instantiate/find the parentfragment associated with that tab name
+			String tabName = ((TextView)v).getText().toString();
+			replace(tabName);
 
+			//toggles on the selected color that we set in our selector drawable
+			v.setSelected(true); 
 			//set tab just clicked as the new current tab
 			mCurrentTab = v; 
 			break; 
@@ -61,13 +62,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 	}
 
 	/**
-	 * This will take the name of the navitem, and use that as the tag for our parent fragment.
+	 * This will take the name of the navitem, and use that as the tag for our parentFragment.
 	 * @param navItemName
 	 */
 	private void replace (String navItemName)
 	{
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		//if the fragment is already in the backstack, then retrieve it and show it instead
+		
+		//if the fragment is already in the backstack, then retrieve it and show it
 		Fragment fragmentInStack = getSupportFragmentManager().findFragmentByTag(navItemName);
 		if(fragmentInStack!=null) {
 			
@@ -76,10 +78,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 			//don't add to backstack because it's already on the backstack and we want to maintain the state of it
 		} else  {
 			
-			//the fragment hasn't been added to the backstack, so now we can init it
+			//couldn't find fragment with that name in backstack, so now we can init a new parentFragment
 			ParentFragment fragment = new ParentFragment();
 			fragment.setArguments(navItemName);
-			fragmentTransaction.replace(R.id.mainWindow, fragment, fragment.getName());
+			fragmentTransaction.replace(R.id.mainWindow, fragment, navItemName);
 			fragmentTransaction.addToBackStack(null);
 			mCurrentParentFragment = fragment;
 
