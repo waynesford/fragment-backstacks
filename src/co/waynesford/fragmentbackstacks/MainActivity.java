@@ -51,10 +51,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 			
 			v.setSelected(true); //toggles on the selected color that we set in our selector drawable
 			//grab the letter of the tab and make a new fragment and replace it on the view
-			String tab_letter = ((TextView)v).getText().toString();
-			ParentFragment fragment = new ParentFragment();
-			fragment.setArguments(tab_letter);
-			replace(fragment);
+			String tabLetter = ((TextView)v).getText().toString();
+			replace(tabLetter);
 
 			//set tab just clicked as the new current tab
 			mCurrentTab = v; 
@@ -62,20 +60,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 		}
 	}
 
-
-	private void replace (ParentFragment fragment)
+	/**
+	 * This will take the name of the navitem, and use that as the tag for our parent fragment.
+	 * @param navItemName
+	 */
+	private void replace (String navItemName)
 	{
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		
 		//if the fragment is already in the backstack, then retrieve it and show it instead
-		Fragment fragmentInStack = getSupportFragmentManager().findFragmentByTag(fragment.getName());
+		Fragment fragmentInStack = getSupportFragmentManager().findFragmentByTag(navItemName);
 		if(fragmentInStack!=null) {
 			
-			fragmentTransaction.replace(R.id.mainWindow, fragmentInStack, fragment.getName());
+			fragmentTransaction.replace(R.id.mainWindow, fragmentInStack, navItemName);
 			mCurrentParentFragment = (ParentFragment)fragmentInStack;
 			//don't add to backstack because it's already on the backstack and we want to maintain the state of it
 		} else  {
 			
+			//the fragment hasn't been added to the backstack, so now we can init it
+			ParentFragment fragment = new ParentFragment();
+			fragment.setArguments(navItemName);
 			fragmentTransaction.replace(R.id.mainWindow, fragment, fragment.getName());
 			fragmentTransaction.addToBackStack(null);
 			mCurrentParentFragment = fragment;
